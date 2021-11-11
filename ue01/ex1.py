@@ -2,10 +2,11 @@ import requests
 import shutil
 import os
 
+folder = "images"
+
 
 def download_image():
     url = "https://aws.random.cat/meow"
-    folder = "images"
     response = requests.get(url)
     json = response.json()
     image_url = json["file"]
@@ -16,21 +17,39 @@ def download_image():
 
     # Check if the image was retrieved successfully
     if r.status_code == 200:
-        # Set decode_content value to True, otherwise the downloaded image file's size will be zero.
         r.raw.decode_content = True
         path = os.path.join(folder, image_name)
-        # Open a local file with wb ( write binary ) permission.
         with open(path, "wb") as f:
             shutil.copyfileobj(r.raw, f)
 
-        print("Image sucessfully Downloaded: ", path)
+        print("Image sucessfully downloaded: ", path)
+        size = r.headers["content-length"]
+        return int(size)
     else:
-        print("Image Couldn't be retreived")
+        print("Image couldn't be downloaded")
+        return 0
 
 
 def main():
+    # Download 20 images
+    minSize, maxSize, avgSize = 0, 0, 0
     for i in range(1, 20):
-        download_image()
+        size = download_image()
+        if size > maxSize:
+            maxSize = size
+        # Also overwrite minSize if it's the first image / previous failed
+        if size < minSize or minSize == 0:
+            minSize = size
+        avgSize += size
+    avgSize /= 20
+
+    # Save the results to a file
+    with open(os.path.join(folder, "_meta.txt"), "w") as f:
+        f.write(
+            "Min size (bytes): {}\nMax size: {}\nAverage size: {}".format(
+                minSize, maxSize, avgSize
+            )
+        )
 
 
 main()

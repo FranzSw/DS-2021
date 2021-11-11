@@ -1,0 +1,3 @@
+Min size (bytes): 61368
+Max size: 1952076
+Average size: 506374.05
