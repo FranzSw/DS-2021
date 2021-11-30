@@ -1,5 +1,7 @@
 # Exercise Sheet 1
 
+Abgabe von Tamino Bauknecht, Franz Sauerwald, Benedikt Weber
+
 ## Ex1
 
 For exercise one, to download new images (remove the old ones and) execute the ex1.py script
